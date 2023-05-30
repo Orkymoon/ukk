@@ -5,40 +5,40 @@ session_start();
 include "src/config/connect.php";
 
 if (@$_GET['module'] == "") {
-    echo "<script>
+  echo "<script>
     document.location='authentication-login.php';
     </script>";
 }
 
 $level = $_SESSION['level'];
 if ($level == "Masyarakat") {
-    $nama = $_SESSION['nama'];
-    $nik = $_SESSION['nik'];
+  $nama = $_SESSION['nama'];
+  $nik = $_SESSION['nik'];
 } elseif ($level == "Admin" || $level == "Petugas") {
-    $nama_petugas = $_SESSION['nama_petugas'];
-    $id_petugas = $_SESSION['id_petugas'];
+  $nama_petugas = $_SESSION['nama_petugas'];
+  $id_petugas = $_SESSION['id_petugas'];
 }
 if (!isset($_SESSION["username"])) {
-    header("Location: authentication-login.php");
-    exit;
+  header("Location: authentication-login.php");
+  exit;
 }
 
 if ($level == "Masyarakat") {
-    $query = mysqli_query($conn, "SELECT foto_masyarakat FROM masyarakat WHERE nik = '$nik'");
-    if (mysqli_num_rows($query) > 0) {
-        // Baris yang cocok ditemukan
-        while ($result = mysqli_fetch_array($query)) {
-            $foto_masyarakat = $result['foto_masyarakat'];
-        }
+  $query = mysqli_query($conn, "SELECT foto_masyarakat FROM masyarakat WHERE nik = '$nik'");
+  if (mysqli_num_rows($query) > 0) {
+    // Baris yang cocok ditemukan
+    while ($result = mysqli_fetch_array($query)) {
+      $foto_masyarakat = $result['foto_masyarakat'];
     }
+  }
 } else if ($level == "Admin" || $level == "Petugas") {
-    $query = mysqli_query($conn, "SELECT foto_petugas FROM petugas WHERE id_petugas = '$id_petugas'");
-    if (mysqli_num_rows($query) > 0) {
-        // Baris yang cocok ditemukan
-        while ($result = mysqli_fetch_array($query)) {
-            $foto_petugas = $result['foto_petugas'];
-        }
+  $query = mysqli_query($conn, "SELECT foto_petugas FROM petugas WHERE id_petugas = '$id_petugas'");
+  if (mysqli_num_rows($query) > 0) {
+    // Baris yang cocok ditemukan
+    while ($result = mysqli_fetch_array($query)) {
+      $foto_petugas = $result['foto_petugas'];
     }
+  }
 }
 
 ?>
@@ -56,8 +56,7 @@ if ($level == "Masyarakat") {
 
 <body>
   <!--  Body Wrapper -->
-  <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-    data-sidebar-position="fixed" data-header-position="fixed">
+  <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
     <!-- Sidebar Start -->
     <aside class="left-sidebar">
       <!-- Sidebar scroll-->
@@ -79,11 +78,11 @@ if ($level == "Masyarakat") {
             </li>
             <?php
             if ($level == "Admin")
-            echo"<li class='sidebar-item'><a class='sidebar-link' href='?module=dashboard-admin' aria-expanded='false'><span><i class='ti ti-layout-dashboard'></i></span><span class='hide-menu'>Dashboard</span></a></li>";
-            elseif($level == "Petugas")
-            echo"<li class='sidebar-item'><a class='sidebar-link' href='?module=dashboard-petugas' aria-expanded='false'><span><i class='ti ti-layout-dashboard'></i></span><span class='hide-menu'>Dashboard</span></a></li>";
-            elseif($level == "Masyarakat")
-            echo"<li class='sidebar-item'><a class='sidebar-link' href='?module=dashboard-masyarakat' aria-expanded='false'><span><i class='ti ti-layout-dashboard'></i></span><span class='hide-menu'>Dashboard</span></a></li>";
+              echo "<li class='sidebar-item'><a class='sidebar-link' href='?module=dashboard-admin' aria-expanded='false'><span><i class='ti ti-layout-dashboard'></i></span><span class='hide-menu'>Dashboard</span></a></li>";
+            elseif ($level == "Petugas")
+              echo "<li class='sidebar-item'><a class='sidebar-link' href='?module=dashboard-petugas' aria-expanded='false'><span><i class='ti ti-layout-dashboard'></i></span><span class='hide-menu'>Dashboard</span></a></li>";
+            elseif ($level == "Masyarakat")
+              echo "<li class='sidebar-item'><a class='sidebar-link' href='?module=dashboard-masyarakat' aria-expanded='false'><span><i class='ti ti-layout-dashboard'></i></span><span class='hide-menu'>Dashboard</span></a></li>";
             ?>
 
             <li class="nav-small-cap">
@@ -92,13 +91,13 @@ if ($level == "Masyarakat") {
             </li>
             <li class="sidebar-item">
               <div id="content">
-                  <?php include "menu.php"; ?>
+                <?php include "menu.php"; ?>
               </div>
             </li>
 
 
-            
-            
+
+
           </ul>
         </nav>
         <!-- End Sidebar navigation -->
@@ -126,20 +125,19 @@ if ($level == "Masyarakat") {
           </ul>
           <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
             <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
-        
+
               <li class="nav-item dropdown">
-                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
-                  aria-expanded="false">
+                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
                   <?php if ($level == "Admin" || $level == "Petugas") : ?>
-                  <img src="src/account/img/<?= $foto_petugas?>" alt="" width="35" height="35" class="rounded-circle">
+                    <img src="src/account/img/<?= $foto_petugas ?>" alt="" width="35" height="35" class="rounded-circle">
                   <?php endif; ?>
                   <?php if ($level == "Masyarakat") : ?>
-                  <img src="src/account/img/<?= $foto_masyarakat?>" alt="" width="35" height="35" class="rounded-circle">
+                    <img src="src/account/img/<?= $foto_masyarakat ?>" alt="" width="35" height="35" class="rounded-circle">
                   <?php endif; ?>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                   <div class="message-body">
-                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                    <a href="?module=account" class="d-flex align-items-center gap-2 dropdown-item">
                       <i class="ti ti-user fs-6"></i>
                       <p class="mb-0 fs-3">My Profile</p>
                     </a>
@@ -159,7 +157,7 @@ if ($level == "Masyarakat") {
       <div class="container-fluid">
         <div class="row">
           <div id="content">
-              <?php include "content.php"; ?>
+            <?php include "content.php"; ?>
           </div>
         </div>
       </div>

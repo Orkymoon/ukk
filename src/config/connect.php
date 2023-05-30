@@ -1,1 +1,1 @@
-<?php $conn=mysqli_connect("localhost","root","","apm"); ?>
+<?php $conn = mysqli_connect("localhost", "root", "", "apm");
