@@ -156,7 +156,7 @@ if (isset($_POST['delete'])) {
                             <td><?= $result["telp"] ?></td>
                             <td>
                                 <div class='text-center'>
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#editModal<?= $no ?>" class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i></a> |
+                                    <a href="?module=edit-datamasyarakat" class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i></a> |
                                     <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $no ?>" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
                                 </div>
                             </td>
