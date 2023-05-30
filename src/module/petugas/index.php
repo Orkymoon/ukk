@@ -90,6 +90,7 @@ if (isset($_POST['delete'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="src/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="src/assets/datatables/datatables.css">
     <script src="src/assets/datatables/datatables.js"></script>
     <title>Petugas</title>
@@ -107,7 +108,7 @@ if (isset($_POST['delete'])) {
 
 <body>
     <div class="card">
-        <div class="card-header fw-bold">
+        <div class="card-header fw-bold text-center">
             Petugas
         </div>
         <div class="card-body">
@@ -135,8 +136,8 @@ if (isset($_POST['delete'])) {
                             <td><?= $result["level"] ?></td>
                             <td>
                                 <div class='text-center'>
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#editModal<?= $no ?>" class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i></a> |
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $no ?>" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
+                                    <a href="?module=edit-datapetugas&id_petugas=<?= $result["id_petugas"] ?>" class="btn btn-warning btn-sm"><i class="material-icons">&#xE254;</i></a> 
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $no ?>" class="btn btn-danger btn-sm"><i class="material-icons">&#xE872;</i></a>
                                 </div>
                             </td>
                         </tr>
@@ -213,9 +214,7 @@ if (isset($_POST['delete'])) {
                     <?php endwhile; ?>
                 </tbody>
             </table>
-            <button type="button" class="btn btn-success px-4" data-bs-toggle="modal" data-bs-target="#insertModal">
-                <i class="fa-solid fa-plus"></i>
-            </button>
+            <a class='btn btn-success px-4' href="?module=add-datapetugas"><i class="fa-solid fa-plus"></i></a>
         </div>
 
         <!-- Insert Modal -->

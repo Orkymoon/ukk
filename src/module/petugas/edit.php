@@ -5,8 +5,8 @@ include "src/config/connect.php";
 $level = $_SESSION['level'];
 
 
-$id = $_GET['id_masyarakat'];
-$row = mysqli_query($conn, "SELECT * FROM masyarakat WHERE id_masyarakat=$id");
+$id = $_GET['id_petugas'];
+$row = mysqli_query($conn, "SELECT * FROM petugas WHERE id_petugas=$id");
 
 
 if ($level != "Admin") {
@@ -19,25 +19,25 @@ if ($level != "Admin") {
 // Edit
 // Menyimpan foto profil baru
 if (isset($_POST['edit'])) {
-    $nik = htmlspecialchars($_POST['nik']);
-    $nama = htmlspecialchars($_POST['nama']);
+    $id_petugas = htmlspecialchars($_POST['id_petugas']);
+    $nama_petugas = htmlspecialchars($_POST['nama_petugas']);
     $username = htmlspecialchars($_POST['username']);
     $telp = htmlspecialchars($_POST['telp']);
+    $level = htmlspecialchars($_POST['level']);
     $fotoProfil = $_FILES['foto_profil'];
 
 
     if (empty($_FILES['foto_profil']['name'])) {
-        $query = mysqli_query($conn, "UPDATE masyarakat SET nama = '$nama', username = '$username', telp = '$telp' WHERE nik = '$nik'");
-
+        $query = mysqli_query($conn, "UPDATE petugas SET nama_petugas = '$nama_petugas', username = '$username', telp = '$telp', level = '$level' WHERE id_petugas = '$id_petugas'");
         if ($query) {
             echo "<script>
                 alert('Data berhasil diubah!');
-                document.location='?module=datamasyarakat';
+                document.location='?module=datapetugas';
             </script>";
         } else {
             echo "<script>
                 alert('Data gagal diubah!');
-                document.location='?module=datamasyarakat';
+                document.location='?module=datapetugas';
             </script>";
         }
     } else {
@@ -78,17 +78,17 @@ if (isset($_POST['edit'])) {
         } else {
             echo "File yang diunggah bukan merupakan gambar.";
         }
-        $query = mysqli_query($conn, "UPDATE masyarakat SET nama = '$nama', username = '$username', telp = '$telp', foto_masyarakat = '$namaFoto' WHERE nik = '$nik'");
+        $query = mysqli_query($conn, "UPDATE petugas SET nama_petugas = '$nama_petugas', username = '$username', telp = '$telp', level = '$level', foto_petugas = '$namaFoto' WHERE id_petugas = '$id_petugas'");
 
         if ($query) {
             echo "<script>
             alert('Data berhasil diubah!');
-            document.location='?module=datamasyarakat';
+            document.location='?module=datapetugas';
         </script>";
         } else {
             echo "<script>
             alert('Data gagal diubah!');
-            document.location='?module=datamasyarakat';
+            document.location='?module=datapetugas';
         </script>";
         }
     }
@@ -116,8 +116,8 @@ if (isset($_POST['edit'])) {
                     <div class="col-lg-4">
                         <div class="card mb-4">
                             <div class="card-body text-center">
-                                <img id="photo" src="src/account/img/<?= $result['foto_masyarakat'] ?>" alt="avatar" class="rounded-circle img-fluid" style="width: 150px; height: 150px;">
-                                <h5 class="my-3"><?= $result['nama'] ?></h5>
+                                <img id="photo" src="src/account/img/<?= $result['foto_petugas'] ?>" alt="avatar" class="rounded-circle img-fluid" style="width: 150px; height: 150px;">
+                                <h5 class="my-3"><?= $result['nama_petugas'] ?></h5>
                                 <div class="d-flex justify-content-center mb-2">
                                     <input type="file" class="mb-0 form-control form-control-sm" id="foto_profil" name="foto_profil" onchange="readURL(this);" />
                                 </div>
@@ -128,21 +128,12 @@ if (isset($_POST['edit'])) {
                         <div class="card mb-4">
                             <div class="card-body">
                                 <div class="row">
-                                    <input type="hidden" name="id_masyarakat" id="id_masyarakat" value="<?= $result['id_masyarakat'] ?>">
+                                    <input type="hidden" name="id_petugas" id="id_petugas" value="<?= $result['id_petugas'] ?>">
                                     <div class="col-sm-3">
-                                        <p class="mb-0">Nomor Induk Kependudukan</p>
+                                        <p class="mb-0">Nama Petugas</p>
                                     </div>
                                     <div class="col-sm-9 d-flex align-items-center">
-                                        <input type="number" class="mb-0 form-control form-control-sm" name="nik" id="nik" value="<?= $result['nik'] ?>" disabled>
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-sm-3">
-                                        <p class="mb-0">Nama Lengkap</p>
-                                    </div>
-                                    <div class="col-sm-9 d-flex align-items-center">
-                                        <input type="text" class="mb-0 form-control form-control-sm" name="nama" id="nama" value="<?= $result['nama'] ?>" required>
+                                        <input type="text" class="mb-0 form-control form-control-sm" name="nama_petugas" id="nama_petugas" value="<?= $result['nama_petugas'] ?>" required>
                                     </div>
                                 </div>
                                 <hr>
@@ -170,6 +161,18 @@ if (isset($_POST['edit'])) {
                                     </div>
                                     <div class="col-sm-9 d-flex align-items-center">
                                         <input type="number" class="mb-0 form-control form-control-sm" name="telp" id="telp" value="<?= $result['telp'] ?>" required>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <p class="mb-0">Level</p>
+                                    </div>
+                                    <div class="col-sm-9 d-flex align-items-center">
+                                        <select class="form-select" name="level" id="level" value="<?= $result['level'] ?>" required>
+                                            <option value="Admin">Admin</option>
+                                            <option value="Petugas">Petugas</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <hr>

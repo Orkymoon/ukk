@@ -28,6 +28,12 @@ if ($_GET['module'] == 'edit-datamasyarakat') {
 if ($_GET['module'] == 'datapetugas') {
     include "src/module/petugas/index.php";
 }
+if ($_GET['module'] == 'add-datapetugas') {
+    include "src/module/petugas/add.php";
+}
+if ($_GET['module'] == 'edit-datapetugas') {
+    include "src/module/petugas/edit.php";
+}
 if ($_GET['module'] == 'pengaduan') {
     include "src/module/pengaduan/index.php";
 }

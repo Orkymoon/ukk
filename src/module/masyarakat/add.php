@@ -20,18 +20,68 @@ if (isset($_POST['add'])) {
   $password = htmlspecialchars(md5($_POST['password']));
   $telp = htmlspecialchars($_POST['telp']);
 
-  $query = mysqli_query($conn, "INSERT INTO masyarakat (nik, nama, username, password, telp) VALUES ('$nik', '$nama', '$username', '$password', '$telp')");
-
-  if ($query) {
-    echo "<script>
-                alert('Data berhasil disimpan!');
-                document.location='?module=datamasyarakat';
-            </script>";
+  if (empty($nik) || empty($nama) || empty($username) || empty($password) || empty($telp)) {
+    $empty = "Data tidak boleh ada yang kosong!";
   } else {
-    echo "<script>
-                alert('Data gagal disimpan!');
+    $check_query = mysqli_query($conn, "SELECT * FROM masyarakat WHERE nik = '$nik'");
+    if (mysqli_num_rows($check_query) > 0) {
+      $error = "NIK sudah terdaftar cobalah NIK yang lain!";
+    } else {
+      if ($_FILES['file']['name'] != '') {
+        $direktori = "src/account/img/";
+        $file_name = $_FILES['file']['name'];
+        $file_size = $_FILES['file']['size'];
+
+        $allowed_extensions = array("jpg", "jpeg", "png", "webp");
+        $allowed_file_size = 2 * 1024 * 1024; // 2 MB
+
+        // Validasi ekstensi file
+        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        if (!in_array($file_extension, $allowed_extensions)) {
+          echo "<script>
+                          alert('Ekstensi file yang diunggah tidak valid. Hanya file dengan ekstensi JPG, JPEG, dan PNG yang diperbolehkan.');
+                          document.location='?module=add-datamasyarakat';
+                      </script>";
+          exit;
+        }
+
+        // Validasi ukuran file
+        if ($file_size > $allowed_file_size) {
+          echo "<script>
+                          alert('Ukuran file yang diunggah melebihi batas maksimal 2 MB.');
+                          document.location='?module=add-datamasyarakat';
+                      </script>";
+          exit;
+        }
+
+        if (file_exists($direktori . $file_name)) {
+          unlink($direktori . $file_name);
+        }
+        move_uploaded_file($_FILES['file']['tmp_name'], $direktori . $file_name);
+      } else {
+        $direktori = "src/account/img/";
+        $default_image = "src/assets/img/UserImage.png";
+        $file_name = "UserImage.png";
+        if (!is_dir($direktori)) {
+          mkdir($direktori, 0755, true);
+        }
+      }
+
+
+      $query = mysqli_query($conn, "INSERT INTO masyarakat VALUES ('', '$nik', '$nama', '$username', '$password', '$telp', 'masyarakat', '$file_name')");
+
+      if ($query) {
+        echo "<script>
+                alert('Data berhasil diubah!');
                 document.location='?module=datamasyarakat';
             </script>";
+      } else {
+        echo "<script>
+                alert('Data gagal diubah!');
+                document.location='?module=datamasyarakat';
+            </script>";
+      }
+    }
   }
 }
 // Add
@@ -200,100 +250,103 @@ if (isset($_POST['add'])) {
 
 <body>
   <div class="container-fluid">
-    <div class="card user-card-full">
-      <form action="" method="POST">
-        <div class="row m-l-0 m-r-0">
-          <div class="col-sm-4 bg-c-lite-green user-profile">
-            <div class="card-block text-center text-white">
-              <div class="m-b-25">
-                <a class="overlay" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                  <img src="src/account/img/<?= $result['foto_masyarakat'] ?>" class="img-radius" width="200" height="200" alt="User-Profile-Image">
-
-                </a>
+    <form action="" method="POST" enctype="multipart/form-data">
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-body text-center">
+              <img id="photo" src="src/account/img/UserImage.png" alt="avatar" class="rounded-circle img-fluid" style="width: 150px; height: 150px;">
+              <h5 class="my-3" id="outputText">NULL</h5>
+              <div class="d-flex justify-content-center mb-2">
+                <input type="file" class="mb-0 form-control form-control-sm" id="file" name="file" onchange="readURL(this);" />
               </div>
-              <h6 class="f-w-600"><?= $result['nama'] ?></h6>
             </div>
           </div>
-          <div class="col-sm-8">
-            <div class="card-block">
-              <h6 class="m-b-20 p-b-5 b-b-default f-w-600 text-center">Edit Form</h6>
-              <div class="row c-font">
-                <input type="hidden" name="id_masyarakat" value="<?= $result['id_masyarakat'] ?>">
-                <div class="col-sm-6">
-                  <p class="m-b-10 f-w-600">Nomor Induk Kependudukan</p>
-                  <!-- <label class="form-label">Nomor Induk Kependudukan</label> -->
-                  <input type="number" class="form-control" name="nik" id="nik" required>
+        </div>
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Nomor Induk Kependudukan</p>
                 </div>
-                <div class="col-sm-6">
-                  <p class="m-b-10 f-w-600">Nama</p>
-                  <!-- <label class="form-label">Nama</label> -->
-                  <input type="text" class="form-control" name="nama" id="nama" required>
-                </div>
-                <div class="col-sm-6">
-                  <p class="m-b-10 f-w-600">Username</p>
-                  <!-- <label class="form-label">Username</label> -->
-                  <input type="text" class="form-control" name="username" id="username" required>
-                </div>
-                <div class="col-sm-6">
-                  <p class="m-b-10 f-w-600">Password</p>
-                  <!-- <label class="form-label">Password</label> -->
-                  <input type="password" class="form-control" name="password" id="password" required>
-                </div>
-                <div class="mb-3">
-                  <p class="m-b-10 f-w-600">Telepon</p>
-                  <!-- <label class="form-label">Telepon</label> -->
-                  <input type="number" class="form-control" name="telp" id="telp" required>
+                <div class="col-sm-9 d-flex align-items-center">
+                  <input type="number" class="mb-0 form-control form-control-sm" name="nik" id="nik" required>
                 </div>
               </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Nama Lengkap</p>
+                </div>
+                <div class="col-sm-9 d-flex align-items-center">
+                  <input type="text" class="mb-0 form-control form-control-sm" name="nama" id="inputText" required>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Username</p>
+                </div>
+                <div class="col-sm-9 d-flex align-items-center">
+                  <input type="text" class="mb-0 form-control form-control-sm" name="username" id="username" required>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Password</p>
+                </div>
+                <div class="col-sm-9 d-flex align-items-center">
+                  <input type="password" class="mb-0 form-control form-control-sm" name="password" id="password" required>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Nomor Handphone</p>
+                </div>
+                <div class="col-sm-9 d-flex align-items-center">
+                  <input type="number" class="mb-0 form-control form-control-sm" name="telp" id="telp" required>
+                </div>
+              </div>
+              <hr>
               <div class="row">
                 <div class="col d-flex justify-content-end">
-                  <a type="button" class="btn btn-secondary mx-1" href="?module=datamasyarakat">Cancel</a>
-                  <button type="submit" class="btn btn-primary mx-1" name="edit">Submit</button>
+                  <a type="button" class="btn btn-outline-danger btn-sm mx-1" href="?module=datamasyarakat">Cancel</a>
+                  <button type="submit" class="btn btn-outline-success btn-sm" name="add">Submit</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </form>
-    </div>
-    <!-- <div class="card">
-        <div class="card-body">
-          <h5 class="card-title fw-semibold mb-4 text-center">Add Form</h5>
-          <div class="card">
-            <form method="POST" action="">
-              <div class="card-body">
-                <input type="hidden" name="id_masyarakat" value="<?= $result['id_masyarakat'] ?>">
-                <div class="mb-3">
-                  <label class="form-label">Nomor Induk Kependudukan</label>
-                  <input type="number" class="form-control" name="nik" id="nik">
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Nama</label>
-                  <input type="text" class="form-control" name="nama" id="nama">
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Username</label>
-                  <input type="text" class="form-control" name="username" id="username">
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Password</label>
-                  <input type="password" class="form-control" name="password" id="password">
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Telepon</label>
-                  <input type="number" class="form-control" name="telp" id="telp">
-                </div>
+      </div>
+    </form>
+  </div>
 
-              </div>
-              <div class="card-footer">
-                <a type="button" class="btn btn-secondary" href="?module=datamasyarakat">Cancel</a>
-                <button type="submit" class="btn btn-primary" name="add">Submit</button>
-              </div>
-            </form>
-          </div>
-        </div> -->
-  </div>
-  </div>
+  <script>
+    function readURL(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+          $('#photo')
+            .attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    // Mendapatkan referensi ke elemen input dan paragraf
+    var input = document.getElementById('inputText');
+    var output = document.getElementById('outputText');
+
+    // Menambahkan event listener untuk input berubah
+    input.addEventListener('input', function() {
+      // Mengubah teks dalam paragraf sesuai dengan nilai input
+      output.textContent = input.value;
+    });
+  </script>
   <script src="/ukk/src/assets/libs/jquery/dist/jquery.min.js"></script>
   <script src="/ukk/src/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/ukk/src/assets/js/sidebarmenu.js"></script>
